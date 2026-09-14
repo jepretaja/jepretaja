@@ -1,0 +1,31 @@
+# Root
+node_modules/
+.vite/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Frontend / Vercel
+jepretaja_website/node_modules/
+jepretaja_website/dist/
+jepretaja_website/.vercel/
+
+# Android / Gradle
+jepretaja_apk/.gradle/
+jepretaja_apk/build/
+jepretaja_apk/**/build/
+jepretaja_apk/local.properties
+jepretaja_apk/*.iml
+jepretaja_apk/.idea/
+
+# Secrets / local config
+**/google-services.json
+**/google-services.json.example
+**/*.keystore
+**/*.jks
+**/*.p12
+**/.env
+**/.env.*
+
+# Logs
+*.log
