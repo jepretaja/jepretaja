@@ -360,7 +360,12 @@ fun CreatorProfileScreen(
                             Spacer(Modifier.height(12.dp))
                             AksiProfilCreator(
                                 creator = c,
-                                onBooking = { bukaPaket() },
+                                onBooking = {
+                                    val packageId = paket.orEmpty()
+                                        .minByOrNull { it.price }
+                                        ?.packageId
+                                    if (packageId != null) onPackageClick(packageId) else bukaPaket()
+                                },
                                 onChat = { mulaiChat(c) },
                             )
 

@@ -183,7 +183,9 @@ fun JepretAjaNavGraph(
                 onBack = { navController.popBackStack() },
                 onSuccess = {
                     authViewModel.useAuthenticatedMode()
-                    navController.navigate(Routes.HOME) { popUpTo(Routes.CHOOSE_ACCESS) { inclusive = true } }
+                    authViewModel.refreshProfileThen {
+                        navController.navigate(Routes.HOME) { popUpTo(Routes.CHOOSE_ACCESS) { inclusive = true } }
+                    }
                 },
             )
         }

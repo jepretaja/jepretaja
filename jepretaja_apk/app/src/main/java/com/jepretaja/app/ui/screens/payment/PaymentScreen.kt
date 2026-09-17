@@ -91,6 +91,13 @@ fun PaymentScreen(
     val memuat by viewModel.memuat.collectAsState()
     val errorMuat by viewModel.errorMuat.collectAsState()
 
+    LaunchedEffect(bookingId, booking?.status, info?.paymentId, payment?.status) {
+        val menungguPembayaran = booking?.status == com.jepretaja.app.data.model.BookingStatus.PENDING_PAYMENT
+        if (menungguPembayaran && info == null && payment?.status == null && !processing) {
+            viewModel.createPaymentOrder(bookingId)
+        }
+    }
+
     val clipboard = LocalClipboardManager.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()

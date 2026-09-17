@@ -49,11 +49,7 @@ fun RegisterCreatorScreen(
 
     LaunchedEffect(province) {
         if (province.isBlank()) {
-            city = ""
             return@LaunchedEffect
-        }
-        if (cityOptions.isNotEmpty() && (city.isBlank() || city !in cityOptions)) {
-            city = cityOptions.first()
         }
     }
 
@@ -82,7 +78,7 @@ fun RegisterCreatorScreen(
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                "Tampilkan portofoliomu dan mulai menerima booking dari klien di kotamu.",
+                "Tampilkan portofoliomu dan mulai menerima booking dari klien di seluruh Indonesia.",
                 style = MaterialTheme.typography.bodyMedium, color = AppColors.TextSecondary,
             )
             Spacer(Modifier.height(22.dp))
@@ -131,7 +127,7 @@ fun RegisterCreatorScreen(
                     onValueChange = { city = it },
                     label = { Text("Kota Domisili") },
                     singleLine = true,
-                    enabled = cityOptions.isNotEmpty(),
+                    enabled = true,
                     modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryEditable),
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = cityExpanded) },
                 )

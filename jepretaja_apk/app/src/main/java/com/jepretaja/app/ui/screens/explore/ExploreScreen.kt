@@ -230,7 +230,11 @@ fun ExploreScreen(
                 }
             }
 
-            VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+            VerticalPager(
+                state = pagerState,
+                beyondViewportPageCount = 0,
+                modifier = Modifier.fillMaxSize(),
+            ) { page ->
                 val isEndPage = adaHalamanAkhir && page == pagerState.pageCount - 1
                 val isAdPage = page >= 4 && page % 5 == 4
                 if (isEndPage) {

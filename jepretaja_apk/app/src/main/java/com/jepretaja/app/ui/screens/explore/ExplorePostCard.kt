@@ -269,29 +269,20 @@ fun ExplorePostCard(
                     )
                 }
             }
-                val bagianJudul = post.caption.substringBefore("\n\n").trim()
-                val bagianDeskripsi = post.caption.substringAfter("\n\n", missingDelimiterValue = post.caption).trim()
-                if (post.caption.contains("\n\n") && bagianJudul.isNotBlank()) {
-                    Text(
-                        bagianJudul,
-                        color = Color.White,
-                        fontWeight = FontWeight.W800,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 2,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                    )
-                }
-                CaptionText(
-                    caption = bagianDeskripsi,
-                    mentions = post.mentions.mapNotNull { m ->
-                        val nama = m["name"]; val id = m["creatorId"]
-                        if (nama != null && id != null) nama to id else null
-                    }.toMap(),
-                    onTagClick = onTagClick,
-                    onMentionClick = onMentionClick,
-                    maxLines = 2,
-                )
             Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = { post.packageId?.let(onPackageClick) ?: onCreatorClick() },
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary),
+                contentPadding = PaddingValues(horizontal = 18.dp),
+                shape = RoundedCornerShape(percent = 50),
+                modifier = Modifier.height(36.dp),
+            ) {
+                Text(
+                    if (post.packagePrice != null) "Booking · ${Formatters.currency(post.packagePrice)}" else "Lihat & Booking",
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.combinedClickable(onClick = onCreatorClick)) {
                 AppAvatar(url = post.creatorPhotoUrl, name = post.creatorName, size = 34.dp)
                 Spacer(Modifier.width(8.dp))
@@ -315,6 +306,29 @@ fun ExplorePostCard(
                     ) { Text(if (following) "Mengikuti" else "Follow", style = MaterialTheme.typography.labelSmall) }
                 }
             }
+            Spacer(Modifier.height(8.dp))
+            val bagianJudul = post.caption.substringBefore("\n\n").trim()
+            val bagianDeskripsi = post.caption.substringAfter("\n\n", missingDelimiterValue = post.caption).trim()
+            if (post.caption.contains("\n\n") && bagianJudul.isNotBlank()) {
+                Text(
+                    bagianJudul,
+                    color = Color.White,
+                    fontWeight = FontWeight.W800,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
+            CaptionText(
+                caption = bagianDeskripsi,
+                mentions = post.mentions.mapNotNull { m ->
+                    val nama = m["name"]; val id = m["creatorId"]
+                    if (nama != null && id != null) nama to id else null
+                }.toMap(),
+                onTagClick = onTagClick,
+                onMentionClick = onMentionClick,
+                maxLines = 2,
+            )
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
@@ -340,19 +354,6 @@ fun ExplorePostCard(
                     color = Color.White.copy(alpha = 0.86f),
                     style = MaterialTheme.typography.labelSmall,
                     maxLines = 1,
-                )
-            }
-            Spacer(Modifier.height(12.dp))
-            Button(
-                onClick = { post.packageId?.let(onPackageClick) ?: onCreatorClick() },
-                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary),
-                contentPadding = PaddingValues(horizontal = 18.dp),
-                shape = RoundedCornerShape(percent = 50),
-                modifier = Modifier.height(36.dp),
-            ) {
-                Text(
-                    if (post.packagePrice != null) "Booking · ${Formatters.currency(post.packagePrice)}" else "Lihat & Booking",
-                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }

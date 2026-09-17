@@ -41,12 +41,41 @@ class AuthRepository @Inject constructor(
         val uid = currentUser?.uid ?: return null
         val snap = db.collection(FirestorePaths.USERS).document(uid).get().await()
         val profile = snap.toObject(UserModel::class.java)
-        if (profile?.role == "creator") return profile
+        val creatorRef = db.collection(FirestorePaths.CREATORS).document(uid)
+        val creatorSnap = creatorRef.get().await()
+
+        if (profile?.role == "creator" && !creatorSnap.exists()) {
+            // Memulihkan akun creator lama yang role-nya sudah benar tetapi
+            // dokumen etalasenya hilang karena pendaftaran terputus.
+            creatorRef.set(
+                mapOf(
+                    "userId" to uid,
+                    "displayName" to profile.name,
+                    "username" to profile.username,
+                    "city" to profile.city,
+                    "province" to profile.province,
+                    "photoUrl" to profile.photoUrl,
+                    "categories" to emptyList<String>(),
+                    "rating" to 0.0,
+                    "reviewCount" to 0,
+                    "followerCount" to 0,
+                    "verified" to false,
+                    "verificationStatus" to "unverified",
+                    "status" to "active",
+                    "createdAt" to FieldValue.serverTimestamp(),
+                ),
+            ).await()
+            return profile
+        }
 
         // Creator lama/baru tetap dikenali bila role pada users belum tersinkron.
-        // Tombol unggah dan layar creator memakai hasil ini sebagai sumber state.
-        val creatorExists = db.collection(FirestorePaths.CREATORS).document(uid).get().await().exists()
-        return if (creatorExists && profile != null) profile.copy(role = "creator") else profile
+        // Endpoint server juga diminta menyamakan role agar operasi berikutnya
+        // (booking, wallet, dan verifikasi) tidak melihat akun sebagai customer.
+        if (creatorSnap.exists() && profile != null && profile.role != "creator") {
+            runCatching { api.call(CloudFunctions.BECOME_CREATOR) }
+            return profile.copy(role = "creator")
+        }
+        return profile
     }
 
     suspend fun login(email: String, password: String) {
@@ -230,11 +259,22 @@ class AuthRepository @Inject constructor(
         if (photoUrl != null) updates["photoUrl"] = photoUrl
 
         val batch = db.batch()
-        batch.update(db.collection(FirestorePaths.USERS).document(uid), updates)
+        batch.set(db.collection(FirestorePaths.USERS).document(uid), updates, com.google.firebase.firestore.SetOptions.merge())
         if (isCreator) {
-            val creatorUpdates = mutableMapOf<String, Any?>("displayName" to name.trim(), "username" to cleanedUsername)
+            val creatorUpdates = mutableMapOf<String, Any?>(
+                "userId" to uid,
+                "displayName" to name.trim(),
+                "username" to cleanedUsername,
+                "city" to city?.trim(),
+                "province" to province?.trim(),
+                "status" to "active",
+            )
             if (photoUrl != null) creatorUpdates["photoUrl"] = photoUrl
-            batch.update(db.collection(FirestorePaths.CREATORS).document(uid), creatorUpdates)
+            batch.set(
+                db.collection(FirestorePaths.CREATORS).document(uid),
+                creatorUpdates,
+                com.google.firebase.firestore.SetOptions.merge(),
+            )
         }
         batch.commit().await()
         if (isCreator && photoUrl != null) {
@@ -243,10 +283,12 @@ class AuthRepository @Inject constructor(
                 .limit(200)
                 .get()
                 .await()
-            posts.documents.chunked(400).forEach { chunk ->
-                val postBatch = db.batch()
-                chunk.forEach { postBatch.update(it.reference, "creatorPhotoUrl", photoUrl) }
-                postBatch.commit().await()
+            runCatching {
+                posts.documents.chunked(400).forEach { chunk ->
+                    val postBatch = db.batch()
+                    chunk.forEach { postBatch.update(it.reference, "creatorPhotoUrl", photoUrl) }
+                    postBatch.commit().await()
+                }
             }
         }
     }

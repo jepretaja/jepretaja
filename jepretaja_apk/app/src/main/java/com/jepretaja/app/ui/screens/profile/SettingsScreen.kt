@@ -141,6 +141,32 @@ fun SettingsScreen(
                 }
             }
 
+            SettingsSection("Creator", Icons.Default.Dashboard) {
+                if (authState.isCreator) {
+                    SettingRow(
+                        Icons.Default.Dashboard,
+                        "Creator Studio",
+                        "Kelola karya, booking, paket, dan pendapatan",
+                        onCreatorStudio,
+                    )
+                } else {
+                    SettingRow(
+                        Icons.Default.Dashboard,
+                        "Daftar sebagai Creator",
+                        "Tampilkan karya dan terima booking dari pelanggan",
+                        onClick = {
+                            authViewModel.becomeCreator { pesan ->
+                                if (pesan == null) {
+                                    authViewModel.refreshProfileThen(onCreatorStudio)
+                                } else {
+                                    actionMessage = pesan
+                                }
+                            }
+                        },
+                    )
+                }
+            }
+
             SettingsSection("Akun", Icons.Default.Person) {
                 SettingRow(Icons.Default.Person, "Edit profil", "Nama, email, nomor HP", onEditProfile)
                 SettingRow(Icons.Default.Lock, "Ubah password", "Kirim tautan ubah password ke email", { authViewModel.resetPassword { actionMessage = it } })
@@ -198,15 +224,6 @@ fun SettingsScreen(
             }
 
             SettingsSection("Booking & Pembayaran", Icons.Default.Payment) {
-                if (authState.isCreator) {
-                    SettingRow(Icons.Default.Dashboard, "Creator Studio", "Kelola karya, booking, paket, dan pendapatan", onCreatorStudio)
-                } else {
-                    SettingRow(Icons.Default.Dashboard, "Daftar sebagai Creator", "Tampilkan karya dan terima booking dari pelanggan", onClick = {
-                        authViewModel.becomeCreator { pesan ->
-                            actionMessage = pesan ?: "Mode creator aktif. Creator Studio sudah tersedia."
-                        }
-                    })
-                }
                 SettingRow(Icons.Default.Payment, "Metode pembayaran", "Metode dipilih saat pembayaran booking", onMyBookings)
                 SettingRow(Icons.Default.History, "Riwayat pembayaran", "Invoice dan status transaksi", onMyBookings)
                 SettingRow(Icons.Default.Sell, "Booking aktif & riwayat booking", "Lihat semua pesanan", onMyBookings)
