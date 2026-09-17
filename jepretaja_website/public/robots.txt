@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /akun
+Disallow: /creator/
+Disallow: /login
+Disallow: /users
+Disallow: /bookings
+Disallow: /payments
+Disallow: /wallets
+Disallow: /withdrawals
+Disallow: /audit-logs
+
+Sitemap: https://jepretaja-website.vercel.app/sitemap.xml
