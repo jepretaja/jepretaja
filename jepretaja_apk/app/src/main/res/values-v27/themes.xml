@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.JepretAja" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    <style name="Theme.JepretAja.Splash" parent="Theme.JepretAja">
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+</resources>

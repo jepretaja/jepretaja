@@ -1,0 +1,192 @@
+package com.jepretaja.app.ui.copy
+
+import androidx.compose.runtime.compositionLocalOf
+
+/**
+ * Bahasa antarmuka mengikuti pekerjaan yang sedang dilakukan pengguna.
+ *
+ * Tamu sedang melihat-lihat dan memutuskan apakah JepretAja cocok untuknya.
+ * Konsumen sedang memilih layanan dan mengelola pesanan. Creator sedang
+ * mengelola etalase, jadwal, pesanan, dan pendapatan. Satu label yang sama
+ * untuk ketiganya membuat produk terasa seperti dashboard generik, jadi copy
+ * utama disatukan di sini agar setiap layar memakai konteks yang konsisten.
+ */
+enum class AppMode {
+    GUEST,
+    CUSTOMER,
+    CREATOR,
+}
+
+data class RoleCopy(
+    val mode: AppMode,
+    val modeLabel: String,
+    val navHome: String,
+    val navExplore: String,
+    val navInbox: String,
+    val navProfile: String,
+    val centerAction: String,
+    val homeGreeting: String,
+    val homeHeroTitle: String,
+    val homeSearchPlaceholder: String,
+    val homePrimaryAction: String,
+    val homeSecondaryAction: String,
+    val homeCategoryTitle: String,
+    val homeCategorySubtitle: String,
+    val homeLatestTitle: String,
+    val homeLatestSubtitle: String,
+    val homeRecommendationTitle: String,
+    val homeRecommendationSubtitle: String,
+    val homeNearbyTitle: String,
+    val homeNearbySubtitle: String,
+    val homePopularTitle: String,
+    val homePopularSubtitle: String,
+    val homeBookingTitle: String,
+    val inboxTitle: String,
+    val inboxLoginTitle: String,
+    val inboxLoginDescription: String,
+    val inboxTabAll: String,
+    val inboxTabBookings: String,
+    val inboxTabMessages: String,
+    val profileTitle: String,
+    val profileGuestTitle: String,
+    val profileGuestDescription: String,
+    val profilePrimaryAction: String,
+    val profileSecondaryAction: String,
+    val profileBookingLabel: String,
+    val profileWorkEmptyTitle: String,
+    val profileWorkEmptyDescription: String,
+    val creatorStudioTitle: String,
+) {
+    companion object {
+        val GUEST = RoleCopy(
+            mode = AppMode.GUEST,
+            modeLabel = "Mode Tamu",
+            navHome = "Beranda",
+            navExplore = "Jelajahi",
+            navInbox = "Pesan",
+            navProfile = "Profil",
+            centerAction = "",
+            homeGreeting = "Selamat datang di JepretAja",
+            homeHeroTitle = "Lihat karya terbaik sebelum memilih",
+            homeSearchPlaceholder = "Cari gaya, momen, atau lokasi...",
+            homePrimaryAction = "Lihat inspirasi",
+            homeSecondaryAction = "Pilih kategori",
+            homeCategoryTitle = "Inspirasi berdasarkan momen",
+            homeCategorySubtitle = "Mulai dari suasana yang ingin kamu abadikan",
+            homeLatestTitle = "Karya yang sedang bersinar",
+            homeLatestSubtitle = "Jelajahi karya creator sebelum membuat keputusan",
+            homeRecommendationTitle = "Creator untuk kamu kenali",
+            homeRecommendationSubtitle = "Profil pilihan untuk membantu kamu menemukan gaya yang cocok",
+            homeNearbyTitle = "Talent di sekitarmu",
+            homeNearbySubtitle = "Lihat creator yang dekat dengan lokasimu",
+            homePopularTitle = "Pilihan komunitas",
+            homePopularSubtitle = "Creator dengan karya yang paling banyak disukai",
+            homeBookingTitle = "Rencanakan sesi pertamamu",
+            inboxTitle = "Akses Pribadi",
+            inboxLoginTitle = "Masuk untuk membuka ruang pribadimu",
+            inboxLoginDescription = "Pesan, booking, dan kabar pilihan akan tersimpan setelah kamu memiliki akun.",
+            inboxTabAll = "Semua kabar",
+            inboxTabBookings = "Rencana sesi",
+            inboxTabMessages = "Percakapan",
+            profileTitle = "Profil",
+            profileGuestTitle = "Buat ruang pribadimu",
+            profileGuestDescription = "Simpan inspirasi, ikuti creator, dan lanjutkan pilihanmu kapan saja.",
+            profilePrimaryAction = "Masuk ke akun",
+            profileSecondaryAction = "Buat akun gratis",
+            profileBookingLabel = "Sesi",
+            profileWorkEmptyTitle = "Belum ada karya pilihan",
+            profileWorkEmptyDescription = "Karya yang kamu simpan akan muncul di sini.",
+            creatorStudioTitle = "Creator Studio",
+        )
+
+        val CUSTOMER = RoleCopy(
+            mode = AppMode.CUSTOMER,
+            modeLabel = "Mode Konsumen",
+            navHome = "Beranda",
+            navExplore = "Jelajahi",
+            navInbox = "Pesan",
+            navProfile = "Profil",
+            centerAction = "Booking",
+            homeGreeting = "Selamat datang kembali",
+            homeHeroTitle = "Temukan creator untuk momen pentingmu",
+            homeSearchPlaceholder = "Cari fotografer, gaya, atau kota...",
+            homePrimaryAction = "Jelajahi creator",
+            homeSecondaryAction = "Pilih kebutuhan",
+            homeCategoryTitle = "Pilih jenis sesi",
+            homeCategorySubtitle = "Temukan layanan yang paling sesuai dengan rencanamu",
+            homeLatestTitle = "Karya terbaru",
+            homeLatestSubtitle = "Lihat hasil terbaik dari creator pilihan",
+            homeRecommendationTitle = "Rekomendasi untukmu",
+            homeRecommendationSubtitle = "Disusun dari minat dan kebutuhan booking kamu",
+            homeNearbyTitle = "Creator terdekat",
+            homeNearbySubtitle = "Lebih mudah dijangkau untuk sesi yang kamu rencanakan",
+            homePopularTitle = "Creator favorit komunitas",
+            homePopularSubtitle = "Rating dan pengalaman yang sudah teruji",
+            homeBookingTitle = "Booking yang sedang berjalan",
+            inboxTitle = "Aktivitas Pesanan",
+            inboxLoginTitle = "Masuk untuk mengelola pesanan",
+            inboxLoginDescription = "Percakapan dengan creator, status booking, dan notifikasi akan tampil di satu tempat.",
+            inboxTabAll = "Semua",
+            inboxTabBookings = "Booking",
+            inboxTabMessages = "Chat",
+            profileTitle = "Akun Saya",
+            profileGuestTitle = "Masuk untuk mengelola akun",
+            profileGuestDescription = "Simpan karya, ikuti creator, dan pantau aktivitas booking kamu.",
+            profilePrimaryAction = "Masuk",
+            profileSecondaryAction = "Daftar sebagai konsumen",
+            profileBookingLabel = "Booking",
+            profileWorkEmptyTitle = "Belum ada karya",
+            profileWorkEmptyDescription = "Karya yang kamu simpan dan sukai akan muncul di sini.",
+            creatorStudioTitle = "Creator Studio",
+        )
+
+        val CREATOR = RoleCopy(
+            mode = AppMode.CREATOR,
+            modeLabel = "Mode Creator",
+            navHome = "Beranda",
+            navExplore = "Jelajahi",
+            navInbox = "Pesan",
+            navProfile = "Profil",
+            centerAction = "Unggah Konten",
+            homeGreeting = "Selamat datang di ruang kerja creator",
+            homeHeroTitle = "Bangun kepercayaan lewat karya terbaikmu",
+            homeSearchPlaceholder = "Cari referensi, tren, atau kategori...",
+            homePrimaryAction = "Lihat etalase",
+            homeSecondaryAction = "Atur kategori",
+            homeCategoryTitle = "Kategori layananmu",
+            homeCategorySubtitle = "Pastikan calon konsumen menemukan spesialisasimu",
+            homeLatestTitle = "Karya terbaru di etalase",
+            homeLatestSubtitle = "Pantau standar visual yang sedang dilihat komunitas",
+            homeRecommendationTitle = "Creator untuk dipantau",
+            homeRecommendationSubtitle = "Ambil referensi dari creator lain di komunitas",
+            homeNearbyTitle = "Peluang di sekitarmu",
+            homeNearbySubtitle = "Lihat layanan lokal dan kebutuhan yang sedang dicari",
+            homePopularTitle = "Creator pilihan komunitas",
+            homePopularSubtitle = "Pelajari karya dengan engagement terbaik",
+            homeBookingTitle = "Pesanan yang sedang berjalan",
+            inboxTitle = "Ruang Kerja Pesanan",
+            inboxLoginTitle = "Masuk untuk membuka ruang kerja",
+            inboxLoginDescription = "Pesan konsumen, status booking, dan kabar operasional akan dirangkum di sini.",
+            inboxTabAll = "Semua",
+            inboxTabBookings = "Pesanan",
+            inboxTabMessages = "Percakapan",
+            profileTitle = "Brand Creator",
+            profileGuestTitle = "Bangun brand-mu di JepretAja",
+            profileGuestDescription = "Daftar sebagai creator untuk menampilkan karya, paket layanan, dan jadwalmu.",
+            profilePrimaryAction = "Masuk sebagai creator",
+            profileSecondaryAction = "Daftar sebagai creator",
+            profileBookingLabel = "Pesanan",
+            profileWorkEmptyTitle = "Etalase masih kosong",
+            profileWorkEmptyDescription = "Terbitkan karya pertama untuk mulai membangun kepercayaan.",
+            creatorStudioTitle = "Creator Studio",
+        )
+
+        fun forMode(mode: AppMode): RoleCopy = when (mode) {
+            AppMode.GUEST -> GUEST
+            AppMode.CUSTOMER -> CUSTOMER
+            AppMode.CREATOR -> CREATOR
+        }
+    }
+}
+
+val LocalJepretAjaCopy = compositionLocalOf { RoleCopy.GUEST }
